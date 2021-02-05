@@ -3,6 +3,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DataAccess.Concrete.InMemory
@@ -15,9 +16,9 @@ namespace DataAccess.Concrete.InMemory
         {
             _cars = new List<Car>
             {
-                new Car{ CarId=1, BrandId=1, BrandName="Mercedes", ColorId="Black", Description="Gasoline", ModelYear="2019", DailyPrice=500,},
-                new Car{ CarId=2, BrandId=2, BrandName="Bmw",ColorId="White", Description="Diesel", ModelYear="2018", DailyPrice=400,},
-                new Car{ CarId=3, BrandId=3, BrandName="Ford",ColorId="Blue", Description="Gas", ModelYear="2017", DailyPrice=300,}
+                new Car{ Description="Gasoline", ModelYear="2019", DailyPrice=500,},
+                new Car{ Description="Diesel", ModelYear="2018", DailyPrice=400,},
+                new Car{ Description="Gas", ModelYear="2017", DailyPrice=300,}
             };
         }
 
@@ -33,9 +34,19 @@ namespace DataAccess.Concrete.InMemory
             _cars.Remove(carToDelete);
         }
 
+        public Car Get(Expression<Func<Car, bool>> filter)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Car> GetAll()
         {
             return _cars;
+        }
+
+        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
+        {
+            throw new NotImplementedException();
         }
 
         public List<Car> GetByBrandId(int brandId)
