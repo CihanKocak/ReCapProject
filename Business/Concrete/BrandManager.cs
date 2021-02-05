@@ -20,6 +20,7 @@ namespace Business.Concrete
             if (brand.BrandName.Length >= 2)
             {
                 _brandDal.Add(brand);
+                Console.WriteLine("Marka başarıyla eklendi!");
             }
             else
             {

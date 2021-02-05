@@ -78,6 +78,25 @@ namespace ConsoleUI
                 BrandId = 5,
                 BrandName = "J" //Marka ismi minimum 2 karakter olmalı hata mesajı alındı.Test Başarılı!
             });
+
+            brandManager.Add(new Brand
+            {
+                BrandName = "Tesla" // Marka Başarılı bir şekilde eklendi!
+            });
+
+            colorManager.Add(new Color
+            {
+                ColorName = "Yellow" // Renk Başarılı bir şekilde eklendi!
+            });
+
+            carManager.Add(new Car
+            {
+                BrandId = 4,
+                ColorId = 4,
+                ModelYear = "2016",
+                Description = "Hybrid",
+                DailyPrice = 750 // Araba Başarılı bir şekilde eklendi!
+            });
             Console.ReadLine();
         }
     }

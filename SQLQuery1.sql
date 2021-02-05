@@ -1,9 +1,23 @@
-﻿INSERT INTO dbo.Cars(BrandId,ColorId,ModelYear,Description,DailyPrice)
-VALUES(1,1,'2019','Gasoline',500),(2,2,'2018','Diesel',400),(3,3,'2017','Gas',300);
+﻿CREATE TABLE [dbo].[Cars] (
+    [CarId]       INT             IDENTITY(1,1) NOT NULL,
+    [BrandId]     INT             NULL,
+    [ColorId]     INT             NULL,
+    [ModelYear]   VARCHAR (10)    NOT NULL,
+    [Description] NTEXT           NOT NULL,
+    [DailyPrice]  DECIMAL (18, 2) NOT NULL,
+    CONSTRAINT [PK_Cars] PRIMARY KEY CLUSTERED ([CarId] ASC),
+    CONSTRAINT [FK_Cars_Brands] FOREIGN KEY ([BrandId]) REFERENCES [dbo].[Brands] ([BrandId]),
+    CONSTRAINT [FK_Cars_Colors] FOREIGN KEY ([ColorId]) REFERENCES [dbo].[Colors] ([ColorId])
+);
 
-INSERT INTO dbo.Brands(BrandName)
-VALUES('Mercedes'),('Bmw'),('Ford');
+CREATE TABLE [dbo].[Brands] (
+    [BrandId]   INT          IDENTITY(1,1) NOT NULL,
+    [BrandName] VARCHAR (50) NOT NULL,
+    CONSTRAINT [PK_Brands] PRIMARY KEY CLUSTERED ([BrandId] ASC)
+);
 
-INSERT INTO dbo.Colors(ColorName)
-VALUES('Black'),('White'),('Blue');
-
+CREATE TABLE [dbo].[Colors] (
+    [ColorId]   INT          IDENTITY(1,1) NOT NULL,
+    [ColorName] VARCHAR (50) NOT NULL,
+    CONSTRAINT [PK_Colors] PRIMARY KEY CLUSTERED ([ColorId] ASC)
+);
