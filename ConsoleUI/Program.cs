@@ -10,6 +10,12 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
+            UserAddTest();
+
+            CustomerAddTest();
+
+            RentalAddTest();
+
             CarGetAllTest();
 
             GetCarsByCarIdTest();
@@ -48,24 +54,68 @@ namespace ConsoleUI
 
             GetCarDetailsTest();
 
-            //CarManager carManager = new CarManager(new EfCarDal());
-            //carManager.Add(new Car
-            //{
-            //    BrandId = 4,
-            //    ColorId = 4,
-            //    ModelYear = "2020",
-            //    Description = "Hybrid",
-            //    DailyPrice = 0 // Sıfır girildiğinde hata mesajı alındı.Test Başarılı!
-            //});
+            CarManager carManager = new CarManager(new EfCarDal());
+            carManager.Add(new Car
+            {
+                BrandId = 4,
+                ColorId = 4,
+                ModelYear = "2020",
+                Description = "Hybrid",
+                DailyPrice = 0 // Sıfır girildiğinde hata mesajı alındı.Test Başarılı!
+            });
 
-            //BrandManager brandManager = new BrandManager(new EfBrandDal());
-            //brandManager.Add(new Brand
-            //{
-            //    BrandId = 5,
-            //    BrandName = "J" //Marka ismi minimum 2 karakter olmalı hata mesajı alındı.Test Başarılı!
-            //});
+            BrandManager brandManager = new BrandManager(new EfBrandDal());
+            brandManager.Add(new Brand
+            {
+                BrandId = 5,
+                BrandName = "J" //Marka ismi minimum 2 karakter olmalı hata mesajı alındı.Test Başarılı!
+            });
 
             Console.ReadLine();
+        }
+
+        private static void RentalAddTest()
+        {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+
+            var result = rentalManager.Add(new Rental
+            {
+                CarId = 1,
+                CustomerId = 3,
+                RentDate = new DateTime(2021, 2, 12),
+                ReturnDate = new DateTime(2021, 2, 19)
+            });
+
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+        }
+
+        private static void CustomerAddTest()
+        {
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            customerManager.Add(new Customer
+            {
+                UserId = 1,
+                CompanyName = "Abc Holding"
+            });
+        }
+
+        private static void UserAddTest()
+        {
+            UserManager userManager = new UserManager(new EfUserDal());
+            userManager.Add(new User
+            {
+                FirstName = "Cihan",
+                LastName = "Koçak",
+                Email = "chnkck1@gmail.com",
+                Password = "12345"
+            });
         }
 
         private static void GetCarDetailsTest()
