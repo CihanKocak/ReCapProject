@@ -32,5 +32,9 @@ namespace Business.Constants
         public static string RentalAdded = "Araba kiralandı";
         public static string CanNotBeRented = "Araba henüz teslim edilmedi";
         public static string RentalsListed = "Kiralamalar listelendi";
+        public static string CheckIfImageLimitExceded = "Bir Araba'ya ait en fazla 5 resim olabilir";
+        public static string ImageAdded = "Resim eklendi";
+        public static string ImageUpdated = "Resim güncellendi";
+        public static string ImageDeleted = "Resim silindi";
     }
 }
