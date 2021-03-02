@@ -1,8 +1,9 @@
 ﻿using Business.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
-using Entities.Concrete;
+using Core.Entities.Concrete;
 using System;
+using Entities.Concrete;
 
 namespace ConsoleUI
 {
@@ -114,7 +115,7 @@ namespace ConsoleUI
                 FirstName = "Cihan",
                 LastName = "Koçak",
                 Email = "chnkck1@gmail.com",
-                Password = "12345"
+                //Password = "12345"
             });
         }
 
