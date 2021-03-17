@@ -1,30 +1,31 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.Concrete.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace DataAccess.Concrete.EntityFramework
+namespace DataAccess.EntityFramework.Concrete
 {
     public class EfCustomerDal : EfEntityRepositoryBase<Customer, CarRentalContext>, ICustomerDal
     {
-        public List<CustomerDetailDto> GetCustomerDetails()
+        public List<DtoCustomerDetail> GetCustomersDetail()
         {
-            using (var context = new CarRentalContext())
+            using (CarRentalContext context = new CarRentalContext())
             {
-                var result = from cu in context.Customers
-                             join u in context.Users on cu.UserId equals u.Id
-                             select new CustomerDetailDto
+                var result = from us in context.Users
+                             join cus in context.Customers
+                             on us.Id equals cus.UserId
+                             select new DtoCustomerDetail
                              {
-                                 Id = cu.UserId,
-                                 FirstName = u.FirstName,
-                                 LastName = u.LastName,                              
-                                 CompanyName = cu.CompanyName
+                                 UserId = us.Id,
+                                 UserName = us.FirstName + " " + us.LastName,
+                                 Email = us.Email,
+                                 CompanyName = cus.CompanyName
                              };
-
                 return result.ToList();
             }
         }

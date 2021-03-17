@@ -4,46 +4,40 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Business.Constants
+namespace Business.Constant
 {
     public static class Messages
     {
-        public static string CarAdded = "Araba eklendi";
-        public static string CarDeleted = "Araba silindi";
-        public static string CarUpdated = "Araba güncellendi";
-        public static string CarDailyPriceInvalid = "Araba Günlük fiyatı 0'dan büyük olmalı!";
-        public static string CarsListed = "Arabalar listelendi";
-        public static string BrandNameInvalid = "Marka ismi en az 2 karakter olmalı";
-        public static string BrandAdded = "Marka eklendi";
-        public static string BrandDeleted = "Marka silindi";
-        public static string BrandUpdated = "Marka güncellendi";
-        public static string BrandsListed = "Markalar listelendi";
-        public static string ColorAdded = "Renk eklendi";
-        public static string ColorDeleted = "Renk silindi";
-        public static string ColorUpdated = "Renk güncellendi";
-        public static string ColorsListed = "Renkler listelendi";
-        public static string MaintenanceTime = "Sistem bakımda";
-        public static string CustomerAdded = "Müşteri eklendi";
-        public static string CustomerDeleted = "Müşteri silindi";
-        public static string CustomerUpdated = "Müşteri güncellendi";
-        public static string CustomersListed = "Müşteriler listelendi";
-        public static string UserAdded = "Kullanıcı eklendi";
-        public static string UserDeleted = "Kullanıcı silindi";
-        public static string UserUpdated = "Kullanıcı güncellendi";
-        public static string UsersListed = "Kullanıcılar listelendi";
-        public static string RentalAdded = "Araba kiralandı";
-        public static string CanNotBeRented = "Araba henüz teslim edilmedi";
-        public static string RentalsListed = "Kiralamalar listelendi";
-        public static string CheckIfImageLimitExceded = "Bir Araba'ya ait en fazla 5 resim olabilir";
-        public static string ImageAdded = "Resim eklendi";
-        public static string ImageUpdated = "Resim güncellendi";
-        public static string ImageDeleted = "Resim silindi";
-        public static string AuthorizationDenied = "Yetkiniz yok.";
+        public static string UserAdded = "Kullanıcı Eklendi";
+        public static string CustomerAdded = "Müsteri eklendi";
+        public static string UserDeleted = "Kullanıcı Silindi";
+        public static string CustomerDeleted = "Müsteri Silindi";
+        public static string UserUpdated = "Kullanıcı Güncellendi";
+        public static string CustomerUpdated = "Müsteri Güncellendi";
+        public static string RentalAdded = "Araç Kiralandı (Rental tablosuna eklendi)";
+        public static string RentalDeleted = "Arac Rental Tablsoundan Silindi";
+        public static string RentalDelivered = "Araç Teslim Edildi";
+        public static string RentalBusy = "Araç Suan Kullanımda, Kiralanamaz..";
+        public static string RentalUpdated = "Arac Bilgisi Tabloda güncellendi";
+        public static string NoRecording = "Kayıt Bulunamadı";
+        public static string CarAdded = "Yeni Arac Sisteme Eklendi";
+        public static string CarDeleted = "Arac Sistemden Silindi";
+        public static string CarUpdated = "Arac Güncellendi";
+        public static string CarDidntAdded = "Eklenemedi-Arac Bilgisi en az 2 karakter olmalı";
+        public static string BrandAdded = "Marka Eklendi";
+        public static string BrandDeleted = "Marka Silindi";
+        public static string BrandUpdated = "Marka Güncellendi";
+        public static string ColorAdded = "Color Eklendi";
+        public static string ColorDeleted = "Color Silindi";
+        public static string ColorUpdated = "Color Güncellendi";
+        public static string UserNotFound = "Kullanıcı Bulunumadı.";
+        public static string IncorrectPassword = "Parola hatalı.";
+        public static string SuccessfulLogin = "Login başarılı";
+        public static string UserAlreadyExists = "kullanıcı zaten mevcut";
+        public static string Registered = "Kullanıcı Başarılı bir sekilde kayıt oldu.";
+        public static string AccessTokenCreated = "Access Token Olusturuldu..";
+        public static string AuthorizationDenied = "yetkiniz yok";
         public static string UserRegistered = "Kullanıcı kayıt oldu";
-        public static string UserNotFound = "Kullanıcı bulunamadı";
-        public static string PasswordError = "Parola hatası";
-        public static string SuccessfulLogin = "Başarılı giriş";
-        public static string UserAlreadyExists = "Kullanıcı mevcut";
-        public static string AccessTokenCreated = "Token oluşturuldu";
+        public static string PasswordError = "Paralo hatası";
     }
 }

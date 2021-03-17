@@ -7,7 +7,7 @@ using System.Text;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
 using Core.Extensions;
-using Business.Constants;
+using Business.Constant;
 
 namespace Business.BusinessAspects.Autofac
 {

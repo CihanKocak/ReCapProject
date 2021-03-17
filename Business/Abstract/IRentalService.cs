@@ -1,16 +1,21 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.Concrete.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Business.Abstract
 {
-    public interface IRentalService
+    public interface IRentalService : IEntityServiceBase<Rental>
     {
-        IDataResult<List<Rental>> GetAll();
-        IDataResult<List<RentalDetailDto>> GetRentalDetails();
-        IResult Add(Rental rental);
+        IResult Deliver(int rentalId);
+        IDataResult<List<Rental>> InUse();
+        IDataResult<List<Rental>> NotInUse();
+        IDataResult<List<DtoRentalDetail>> GetRentalDetails();
+
+
+
     }
 }

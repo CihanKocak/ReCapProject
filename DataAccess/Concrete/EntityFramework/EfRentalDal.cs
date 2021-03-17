@@ -1,7 +1,7 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.Concrete.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,38 +12,30 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfRentalDal : EfEntityRepositoryBase<Rental, CarRentalContext>, IRentalDal
     {
-        public List<RentalDetailDto> GetRentalDetails()
+        public List<DtoRentalDetail> GetRentalDetails()
         {
             using (CarRentalContext context = new CarRentalContext())
             {
-                var result = from r in context.Rentals
-                             join c in context.Cars
-                             on r.CarId equals c.CarId
+                var result = from re in context.Rentals
+                             join ca in context.Cars
+                             on re.CarId equals ca.CarId
                              join cu in context.Customers
-                             on r.CustomerId equals cu.Id
-                             join u in context.Users
-                             on cu.UserId equals u.Id
-                             join b in context.Brands
-                             on c.BrandId equals b.BrandId
-                             join color in context.Colors 
-                             on c.ColorId equals color.ColorId
-                             select new RentalDetailDto
+                             on re.CustomerId equals cu.UserId
+                             join us in context.Users
+                             on cu.UserId equals us.Id
+                             select new DtoRentalDetail
                              {
-                                 Id = r.Id,
-                                 UserId = cu.UserId,
-                                 CarId = c.CarId,
+                                 Id = re.Id,
+                                 Descripton = ca.Description,
                                  CompanyName = cu.CompanyName,
-                                 BrandName = b.BrandName,
-                                 ColorName = color.ColorName,
-                                 FirstName = u.FirstName,
-                                 LastName = u.LastName,
-                                 DailyPrice = c.DailyPrice,
-                                 RentDate = r.RentDate,
-                                 ReturnDate = r.ReturnDate
+                                 RentDate = re.RentDate,
+                                 ReturnDate = re.ReturnDate,
+                                 UserName = us.FirstName + " " + us.LastName,
+                                 DailyPrice = ca.DailyPrice
                              };
                 return result.ToList();
-
             }
         }
+
     }
 }

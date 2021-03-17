@@ -14,7 +14,6 @@ namespace WebAPI.Controllers
     public class CustomersController : ControllerBase
     {
         ICustomerService _customerService;
-
         public CustomersController(ICustomerService customerService)
         {
             _customerService = customerService;
@@ -31,16 +30,14 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getcustomerdetails")]
-        public IActionResult GetCustomerDetails()
+        [HttpGet("getbyid")]
+        public IActionResult GetById(int id)
         {
-            var result = _customerService.GetCustomerDetails();
-
+            var result = _customerService.GetById(id);
             if (result.Success)
             {
                 return Ok(result);
             }
-
             return BadRequest(result);
         }
 
@@ -55,6 +52,19 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+        [HttpPost("delete")]
+        public IActionResult Delete(Customer customer)
+        {
+            var result = _customerService.Delete(customer);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
         [HttpPost("update")]
         public IActionResult Update(Customer customer)
         {
@@ -66,10 +76,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
-        public IActionResult Delete(Customer customer)
+        [HttpGet("GetCustomersDetail")]
+        public IActionResult GetCustomersDetails()
         {
-            var result = _customerService.Delete(customer);
+            var result = _customerService.GetCustomersDetails();
             if (result.Success)
             {
                 return Ok(result);

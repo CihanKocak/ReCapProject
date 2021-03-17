@@ -1,12 +1,10 @@
 ﻿using Business.Abstract;
-using Business.Constants;
-using Business.ValidationRules.FluentValidation;
-using Core.Aspects.Autofac.Validation;
-using Core.CrossCuttingConcerns.Validation;
+using Business.BusinessAspects.Autofac;
+using Business.Constant;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.Concrete.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,43 +13,44 @@ namespace Business.Concrete
 {
     public class CustomerManager : ICustomerService
     {
-        ICustomerDal _customerDal;
-
+        private ICustomerDal _customerDal;
         public CustomerManager(ICustomerDal customerDal)
         {
             _customerDal = customerDal;
         }
 
-        [ValidationAspect(typeof(CustomerValidator))]
-        public IResult Add(Customer customer)
+        [SecuredOperation("Kullanici")]
+        public IResult Add(Customer Tentity)
         {
-            _customerDal.Add(customer);
-
+            _customerDal.Add(Tentity);
             return new SuccessResult(Messages.CustomerAdded);
         }
 
         public IResult Delete(Customer customer)
         {
             _customerDal.Delete(customer);
-
             return new SuccessResult(Messages.CustomerDeleted);
         }
 
         public IDataResult<List<Customer>> GetAll()
         {
-            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Messages.CustomersListed);
+            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll());
         }
 
-        public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
+        public IDataResult<Customer> GetById(int Id)
         {
-            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails());
+            return new SuccessDataResult<Customer>(_customerDal.Get(p => p.UserId == Id));
         }
 
-        public IResult Update(Customer customer)
+        public IDataResult<List<DtoCustomerDetail>> GetCustomersDetails()
         {
-            _customerDal.Update(customer);
+            return new SuccessDataResult<List<DtoCustomerDetail>>(_customerDal.GetCustomersDetail());
+        }
 
-            return new SuccessResult(Messages.CustomerUpdated);
+        public IResult Update(Customer Tentity)
+        {
+            _customerDal.Update(Tentity);
+            return new SuccessResult(Messages.UserUpdated);
         }
     }
 }
