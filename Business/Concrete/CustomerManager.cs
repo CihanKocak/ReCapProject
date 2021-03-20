@@ -1,56 +1,88 @@
 ﻿using Business.Abstract;
-using Business.BusinessAspects.Autofac;
-using Business.Constant;
+using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.Concrete.DTOs;
+using Entities.Dtos;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Business.Concrete
 {
     public class CustomerManager : ICustomerService
     {
-        private ICustomerDal _customerDal;
+        private readonly ICustomerDal _customerDal;
+
         public CustomerManager(ICustomerDal customerDal)
         {
             _customerDal = customerDal;
         }
 
-        [SecuredOperation("Kullanici")]
-        public IResult Add(Customer Tentity)
+        [ValidationAspect(typeof(CustomerValidator))]
+        public IResult Add(Customer entity)
         {
-            _customerDal.Add(Tentity);
-            return new SuccessResult(Messages.CustomerAdded);
+            try
+            {
+                _customerDal.Add(entity);
+                return new SuccessResult(Messages.AddCustomerMessage);
+            }
+            catch (Exception)
+            {
+                return new ErrorResult(Messages.ErrorCustomerFKMessage);
+            }
         }
 
-        public IResult Delete(Customer customer)
+        public IResult Delete(Customer entity)
         {
-            _customerDal.Delete(customer);
-            return new SuccessResult(Messages.CustomerDeleted);
+            _customerDal.Delete(entity);
+            return new SuccessResult(Messages.DeleteCustomerMessage);
+        }
+
+        public IDataResult<Customer> Get(int id)
+        {
+            Customer customer = _customerDal.Get(p => p.Id == id);
+            if (customer == null)
+            {
+                return new ErrorDataResult<Customer>(Messages.GetErrorCustomerMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<Customer>(customer, Messages.GetSuccessCustomerMessage);
+            }
         }
 
         public IDataResult<List<Customer>> GetAll()
         {
-            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll());
+            List<Customer> customers = _customerDal.GetAll();
+            if (customers.Count == 0)
+            {
+                return new ErrorDataResult<List<Customer>>(Messages.GetErrorCustomerMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<List<Customer>>(customers, Messages.GetSuccessCustomerMessage);
+            }
         }
 
-        public IDataResult<Customer> GetById(int Id)
+        public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
         {
-            return new SuccessDataResult<Customer>(_customerDal.Get(p => p.UserId == Id));
+            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetailDto(), Messages.GetSuccessCustomerMessage);
         }
 
-        public IDataResult<List<DtoCustomerDetail>> GetCustomersDetails()
+        [ValidationAspect(typeof(CustomerValidator))]
+        public IResult Update(Customer entity)
         {
-            return new SuccessDataResult<List<DtoCustomerDetail>>(_customerDal.GetCustomersDetail());
-        }
-
-        public IResult Update(Customer Tentity)
-        {
-            _customerDal.Update(Tentity);
-            return new SuccessResult(Messages.UserUpdated);
+            try
+            {
+                _customerDal.Update(entity);
+                return new SuccessResult(Messages.EditCustomerMessage);
+            }
+            catch (Exception)
+            {
+                return new ErrorResult(Messages.ErrorCustomerFKMessage);
+            }
         }
     }
 }

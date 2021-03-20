@@ -1,14 +1,22 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
-using Entities.Concrete.DTOs;
-using System;
+using Entities.Dtos;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Business.Abstract
 {
-    public interface ICustomerService : IEntityServiceBase<Customer>
+    public interface ICustomerService
     {
-        IDataResult<List<DtoCustomerDetail>> GetCustomersDetails();
+        IDataResult<List<Customer>> GetAll();
+
+        IDataResult<List<CustomerDetailDto>> GetCustomerDetails();
+
+        IDataResult<Customer> Get(int id);
+
+        IResult Add(Customer entity);
+
+        IResult Update(Customer entity);
+
+        IResult Delete(Customer entity);
     }
 }

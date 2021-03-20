@@ -1,11 +1,8 @@
 ﻿using Business.Abstract;
+using Core.Aspects.Autofac.Transaction;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
+using Entities.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -13,108 +10,99 @@ namespace WebAPI.Controllers
     [ApiController]
     public class RentalsController : ControllerBase
     {
-        IRentalService _rentalService;
-        public RentalsController(IRentalService rentalService)
+        private readonly IRentalService _rentalService;
+        private readonly IPaymentService _paymentService;
+
+        public RentalsController(IRentalService rentalService, IPaymentService paymentService)
         {
             _rentalService = rentalService;
-        }
-
-        [HttpGet("getall")]
-        public IActionResult GetAll()
-        {
-            var result = _rentalService.GetAll();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
+            _paymentService = paymentService;
         }
 
         [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        public ActionResult GetById(int id)
         {
-            var result = _rentalService.GetById(id);
+            var result = _rentalService.Get(id);
             if (result.Success)
-            {
                 return Ok(result);
-            }
-            return BadRequest(result.Message);
+            return BadRequest(result);
         }
-        [HttpGet("getRentalDetails")]
-        public IActionResult GetRentalDetails()
+
+        [HttpGet("getallrentaldetails")]
+        public ActionResult GetAllRentalDetails()
         {
-            var result = _rentalService.GetRentalDetails();
+            var result = _rentalService.GetAllRentalDetails();
             if (result.Success)
-            {
                 return Ok(result);
-            }
-            return BadRequest(result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpGet("getallundeliveredrentaldetails")]
+        public ActionResult GetAllUndeliveredRentalDetails()
+        {
+            var result = _rentalService.GetAllUndeliveredRentalDetails();
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpGet("getalldeliveredrentaldetails")]
+        public ActionResult GetAllDeliveredRentalDetails()
+        {
+            var result = _rentalService.GetAllDeliveredRentalDetails();
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("deliverthecar")]
+        public ActionResult DeliverTheCar(Rental rental)
+        {
+            var result = _rentalService.DeliverTheCar(rental);
+            if (result.Success)
+                return Ok(result);
+            else
+                return BadRequest(result);
+        }
+
+        [HttpGet("getall")]
+        public ActionResult GetAll()
+        {
+            var result = _rentalService.GetAll();
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Rental rental)
+        public ActionResult Add(Rental rental)
         {
             var result = _rentalService.Add(rental);
             if (result.Success)
-            {
                 return Ok(result);
-            }
-            return BadRequest(result.Message);
+            return BadRequest(result);
         }
 
 
-        [HttpPost("delete")]
-        public IActionResult Delete(Rental rental)
+        //Test amaçlı
+        [HttpPost("paymentadd")]
+        //[TransactionAspect]
+        public ActionResult PaymentAdd(RentalPaymentDto rentalPaymentDto)
         {
-            var result = _rentalService.Delete(rental);
-            if (result.Success)
+            var paymentResult = _paymentService.ReceivePayment(rentalPaymentDto.Payment);
+            if (!paymentResult.Success)
             {
-                return Ok(result.Message);
+                return BadRequest(paymentResult);
             }
-            return BadRequest(result.Message);
-        }
-        [HttpPost("deliver")]
-        public IActionResult Deliver(int id)
-        {
-            var result = _rentalService.Deliver(id);
-            if (result.Success)
-            {
-                return Ok(result.Message);
-            }
-            return BadRequest(result.Message);
-        }
+            var result = _rentalService.Add(rentalPaymentDto.Rental);
 
-
-        [HttpPost("update")]
-        public IActionResult Update(Rental rental)
-        {
-            var result = _rentalService.Update(rental);
             if (result.Success)
-            {
                 return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-        [HttpGet("notinuse")]
-        public IActionResult NotInUse()
-        {
-            var result = _rentalService.NotInUse();
-            if (result.Success)
+            else
             {
-                return Ok(result);
+                throw new System.Exception(result.Message);
+                //return BadRequest(result);                    
             }
-            return BadRequest(result.Message);
-        }
-        [HttpGet("inuse")]
-        public IActionResult InUse()
-        {
-            var result = _rentalService.InUse();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
         }
     }
 }

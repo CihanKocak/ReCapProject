@@ -1,50 +1,61 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.Concrete.DTOs;
-using Microsoft.EntityFrameworkCore;
+using Entities.Dtos;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace DataAccess.Concrete.EntityFramework
 {
     public class EfCarDal : EfEntityRepositoryBase<Car, CarRentalContext>, ICarDal
     {
-        public List<DtoCarDetail> GetCarDetails(Expression<Func<DtoCarDetail, bool>> filter = null)
+        public CarDetailDto GetCarDetail(int carId)
         {
             using (CarRentalContext context = new CarRentalContext())
             {
-                var result = from c in context.Cars
-                             join b in context.Brands
-                             on c.BrandId equals b.BrandId
-                             join co in context.Colors
-                             on c.ColorId equals co.ColorId
-                             //join ci in context.CarImages
-                             //on c.Id equals ci.CarId
-                             select new DtoCarDetail
+                var result = from p in context.Cars.Where(p => p.CarId == carId)
+                             join c in context.Colors
+                             on p.ColorId equals c.ColorId
+                             join d in context.Brands
+                             on p.BrandId equals d.BrandId
+                             select new CarDetailDto
                              {
-                                 Id = c.CarId,
-                                 Description = c.Description,
-                                 BrandName = b.BrandName,
-                                 BrandId = b.BrandId,
-                                 ColorId = co.ColorId,
-                                 ColorName = co.ColorName,
-                                 DailyPrice = c.DailyPrice,
-                                 //ModelYear = c.ModelYear,
-                                 ImagePath = (from a in context.CarImages where a.CarId == c.CarId select a.ImagePath).FirstOrDefault()
-
+                                 BrandName = d.BrandName,
+                                 ColorName = c.ColorName,
+                                 DailyPrice = p.DailyPrice,
+                                 Description = p.Description,
+                                 ModelYear = p.ModelYear,
+                                 CarId = p.CarId,
+                                 Status = !context.Rentals.Any(p => p.CarId == carId && p.ReturnDate == null)
                              };
 
-
-
-                return filter == null ? result.ToList() : result.Where(filter).ToList();
-
+                return result.SingleOrDefault();
             }
-
         }
 
+        public List<CarDetailDto> GetCarsDetail(Expression<Func<Car, bool>> filter = null)
+        {
+            using (CarRentalContext context = new CarRentalContext())
+            {
+                var result = from p in filter == null ? context.Cars : context.Cars.Where(filter)
+                             join c in context.Colors
+                             on p.ColorId equals c.ColorId
+                             join d in context.Brands
+                             on p.BrandId equals d.BrandId
+                             select new CarDetailDto
+                             {
+                                 BrandName = d.BrandName,
+                                 ColorName = c.ColorName,
+                                 DailyPrice = p.DailyPrice,
+                                 Description = p.Description,
+                                 ModelYear = p.ModelYear,
+                                 CarId = p.CarId
+                             };
+                return result.ToList();
+            }
+        }
     }
 }

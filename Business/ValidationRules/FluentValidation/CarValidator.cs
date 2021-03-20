@@ -1,8 +1,5 @@
 ﻿using Entities.Concrete;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Business.ValidationRules.FluentValidation
 {
@@ -10,11 +7,12 @@ namespace Business.ValidationRules.FluentValidation
     {
         public CarValidator()
         {
-            RuleFor(c => c.DailyPrice).NotEmpty();
-            RuleFor(c => c.DailyPrice).GreaterThan(0);
-            RuleFor(c => c.ModelYear).NotEmpty();
-            RuleFor(c => c.Description).NotEmpty();
-            RuleFor(c => c.Description).MinimumLength(3);
+            RuleFor(car => car.BrandId).NotEmpty();
+            RuleFor(car => car.ColorId).NotEmpty();
+            RuleFor(car => car.DailyPrice).NotEmpty();
+            RuleFor(car => car.DailyPrice).GreaterThan(0);
+            RuleFor(car => car.ModelYear).NotEmpty();
+            RuleFor(car => car.Description).MinimumLength(2);
         }
     }
 }

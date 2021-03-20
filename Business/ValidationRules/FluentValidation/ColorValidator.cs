@@ -1,8 +1,5 @@
 ﻿using Entities.Concrete;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Business.ValidationRules.FluentValidation
 {
@@ -10,8 +7,7 @@ namespace Business.ValidationRules.FluentValidation
     {
         public ColorValidator()
         {
-            RuleFor(co => co.ColorName).NotEmpty();
-            RuleFor(co => co.ColorName).MinimumLength(2);
+            RuleFor(color => color.ColorName).NotEmpty();
         }
     }
 }

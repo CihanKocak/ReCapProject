@@ -1,50 +1,67 @@
 ﻿using Business.Abstract;
-using Business.Constant;
+using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Business.Concrete
 {
     public class ColorManager : IColorService
     {
-        IColorDal _colorDal;
+        private readonly IColorDal _colorDal;
+
         public ColorManager(IColorDal colorDal)
         {
             _colorDal = colorDal;
         }
-        public IResult Add(Color color)
+
+        [ValidationAspect(typeof(ColorValidator))]
+        public IResult Add(Color entity)
         {
-            _colorDal.Add(color);
-            return new SuccessResult(Messages.ColorAdded);
+            _colorDal.Add(entity);
+            return new SuccessResult(Messages.AddColorMessage);
         }
 
-        public IResult Delete(Color color)
+        public IResult Delete(Color entity)
         {
-            _colorDal.Delete(color);
-            return new SuccessResult(Messages.ColorDeleted);
+            _colorDal.Delete(entity);
+            return new SuccessResult(Messages.DeleteColorMessage);
+        }
+
+        public IDataResult<Color> Get(int id)
+        {
+            Color color = _colorDal.Get(p => p.ColorId == id);
+            if (color == null)
+            {
+                return new ErrorDataResult<Color>(Messages.GetErrorColorMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<Color>(color, Messages.GetSuccessColorMessage);
+            }
         }
 
         public IDataResult<List<Color>> GetAll()
         {
-            return new SuccessDataResult<List<Color>>(_colorDal.GetAll().ToList());
-
+            List<Color> colors = _colorDal.GetAll();
+            if (colors == null)
+            {
+                return new ErrorDataResult<List<Color>>(Messages.GetErrorColorMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<List<Color>>(colors, Messages.GetSuccessColorMessage);
+            }
         }
 
-        public IDataResult<Color> GetById(int Id)
+        [ValidationAspect(typeof(ColorValidator))]
+        public IResult Update(Color entity)
         {
-            return new SuccessDataResult<Color>(_colorDal.Get(p => p.ColorId == Id));
-
-        }
-
-        public IResult Update(Color color)
-        {
-            _colorDal.Update(color);
-            return new SuccessResult(Messages.ColorUpdated);
+            _colorDal.Update(entity);
+            return new SuccessResult(Messages.EditColorMessage);
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace WebAPI.Controllers
 {
@@ -13,68 +9,38 @@ namespace WebAPI.Controllers
     [ApiController]
     public class BrandsController : ControllerBase
     {
-        IBrandService _brandService;
+        private readonly IBrandService _brandService;
 
         public BrandsController(IBrandService brandService)
         {
             _brandService = brandService;
         }
 
-        [HttpGet("getall")]
-        public IActionResult GetAll()
+        [HttpGet("getbyid")]
+        public ActionResult GetById(int id)
         {
-            var result = _brandService.GetAll();
+            var result = _brandService.Get(id);
             if (result.Success)
-            {
                 return Ok(result);
-            }
             return BadRequest(result);
         }
 
-        [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        [HttpGet("getall")]
+        public ActionResult GetAll()
         {
-            var result = _brandService.GetById(id);
+            var result = _brandService.GetAll();
             if (result.Success)
-            {
                 return Ok(result);
-            }
             return BadRequest(result);
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Brand brand)
+        public ActionResult Add(Brand brand)
         {
             var result = _brandService.Add(brand);
             if (result.Success)
-            {
                 return Ok(result);
-            }
             return BadRequest(result);
-        }
-
-
-        [HttpPost("delete")]
-        public IActionResult Delete(Brand brand)
-        {
-            var result = _brandService.Delete(brand);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-
-        [HttpPost("update")]
-        public IActionResult Update(Brand brand)
-        {
-            var result = _brandService.Update(brand);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
         }
     }
 }

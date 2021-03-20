@@ -1,43 +1,83 @@
-﻿using Core.Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-
-namespace Business.Constant
+﻿namespace Business.Constants
 {
     public static class Messages
     {
-        public static string UserAdded = "Kullanıcı Eklendi";
-        public static string CustomerAdded = "Müsteri eklendi";
-        public static string UserDeleted = "Kullanıcı Silindi";
-        public static string CustomerDeleted = "Müsteri Silindi";
-        public static string UserUpdated = "Kullanıcı Güncellendi";
-        public static string CustomerUpdated = "Müsteri Güncellendi";
-        public static string RentalAdded = "Araç Kiralandı (Rental tablosuna eklendi)";
-        public static string RentalDeleted = "Arac Rental Tablsoundan Silindi";
-        public static string RentalDelivered = "Araç Teslim Edildi";
-        public static string RentalBusy = "Araç Suan Kullanımda, Kiralanamaz..";
-        public static string RentalUpdated = "Arac Bilgisi Tabloda güncellendi";
-        public static string NoRecording = "Kayıt Bulunamadı";
-        public static string CarAdded = "Yeni Arac Sisteme Eklendi";
-        public static string CarDeleted = "Arac Sistemden Silindi";
-        public static string CarUpdated = "Arac Güncellendi";
-        public static string CarDidntAdded = "Eklenemedi-Arac Bilgisi en az 2 karakter olmalı";
-        public static string BrandAdded = "Marka Eklendi";
-        public static string BrandDeleted = "Marka Silindi";
-        public static string BrandUpdated = "Marka Güncellendi";
-        public static string ColorAdded = "Color Eklendi";
-        public static string ColorDeleted = "Color Silindi";
-        public static string ColorUpdated = "Color Güncellendi";
-        public static string UserNotFound = "Kullanıcı Bulunumadı.";
-        public static string IncorrectPassword = "Parola hatalı.";
-        public static string SuccessfulLogin = "Login başarılı";
-        public static string UserAlreadyExists = "kullanıcı zaten mevcut";
-        public static string Registered = "Kullanıcı Başarılı bir sekilde kayıt oldu.";
-        public static string AccessTokenCreated = "Access Token Olusturuldu..";
-        public static string AuthorizationDenied = "yetkiniz yok";
-        public static string UserRegistered = "Kullanıcı kayıt oldu";
-        public static string PasswordError = "Paralo hatası";
+        //Car
+        public static string AddCarMessage = "Araç başarıyla eklendi.";
+
+        public static string AddErrorCarMessage = "Araba açıklaması en az 2 karakterden oluşmalıdır ve günlük fiyatı da 0 liradan büyük olmalıdır.";
+        public static string DeleteCarMessage = "Araç başarıyla silindi.";
+        public static string EditCarMessage = "Araç başarıyla düzenlendi.";
+        public static string GetSuccessCarMessage = "Araç bilgisi / bilgileri getirildi.";
+        public static string GetErrorCarMessage = "Araç bilgisi / bilgileri getirilemedi.";
+        public static string ErrorCarFKMessage = "Renk ve Marka alanlarını tekrar kontrol ediniz..";
+
+        //Brand
+        public static string AddBrandMessage = "Marka başarıyla eklendi.";
+
+        public static string DeleteBrandMessage = "Marka başarıyla silindi.";
+        public static string EditBrandMessage = "Marka başarıyla güncellendi.";
+        public static string GetSuccessBrandMessage = "Marka bilgisi / bilgileri getirildi.";
+        public static string GetErrorBrandMessage = "Marka bilgisi / bilgileri getirilemedi.";
+
+        //Color
+        public static string AddColorMessage = "Renk başarıyla eklendi.";
+
+        public static string DeleteColorMessage = "Renk başarıyla silindi.";
+        public static string EditColorMessage = "Renk başarıyla güncellendi.";
+        public static string GetSuccessColorMessage = "Renk bilgisi / bilgileri getirildi.";
+        public static string GetErrorColorMessage = "Renk bilgisi / bilgileri getirilemedi.";
+
+        //Customer
+        public static string AddCustomerMessage = "Müşteri başarıyla eklendi.";
+
+        public static string DeleteCustomerMessage = "Müşteri başarıyla silindi.";
+        public static string EditCustomerMessage = "Müşteri başarıyla güncellendi.";
+        public static string GetSuccessCustomerMessage = "Müşteri bilgisi / bilgileri getirildi.";
+        public static string GetErrorCustomerMessage = "Müşteri bilgisi / bilgileri getirilemedi.";
+        public static string ErrorCustomerFKMessage = "Kullanıcı alanını tekrar kontrol ediniz..";
+
+        //Rental
+        public static string AddRentalMessage = "Araç kiralama işlemi başarıyla eklendi.";
+
+        public static string DeleteRentalMessage = "Araç kiralama işlemi başarıyla silindi.";
+        public static string EditRentalMessage = "Araç kiralama işlemi başarıyla güncellendi.";
+        public static string GetSuccessRentalMessage = "Araç kiralama işlemi bilgisi / bilgileri getirildi.";
+        public static string GetErrorRentalMessage = "Araç kiralama işlemi bilgisi / bilgileri getirilemedi.";
+        public static string CarAvaible = "Araç kiralanmaya uygundur.";
+        public static string CarNotAvaible = "Araç kiralanmaya uygun değildir.";
+        public static string CarNotDeliverTheCar = "Araç teslim almaya uygun değildir.";
+        public static string CarDeliverTheCar = "Araç teslim alındı.";
+        public static string ErrorRentalFKMessage = "Müşteri ve araba alanlarını tekrar kontrol ediniz..";
+
+        //User
+        public static string AddUserMessage = "Üye başarıyla eklendi.";
+
+        public static string DeleteUserMessage = "Üye başarıyla silindi.";
+        public static string EditUserMessage = "Üye başarıyla güncellendi.";
+        public static string GetSuccessUserMessage = "Üye bilgisi / bilgileri getirildi.";
+        public static string GetErrorUserMessage = "Üye bilgisi / bilgileri getirilemedi.";
+
+        //CarImage
+
+        public static string AddCarImageMessage = "Araç resmi başarıyla eklendi";
+        public static string EditCarImageMessage = "Araç resmi başarıyla güncellendi";
+        public static string DeleteCarImageMessage = "Araç resmi başarıyla silindi";
+        public static string AboveImageAddingLimit = "Araç maksimum resim sayısına ulaştı. Resim ekleyemezsiniz";
+        public static string IncorrectFileExtension = "Kabul edilmeyen dosya uzantısı";
+        public static string ImageNotFound = "Resim dosyası bulunamadı.";
+        public static string CarImageNotFound = "Değiştirilmek istenen resim bulunamadı.";
+
+        public static string AuthorizationDenied = "Yetkilendirme reddedildi";
+        public static string Registered = "Başarıyla kayıt olundu";
+        public static string UserNotFound = "Kullanıcı bulunamadı";
+        public static string WrongPassword = "Yanlış parola";
+        public static string SuccessfulLogin = "Başarılı giriş";
+        public static string UserAvailable = "Kullanıcı mevcut";
+        public static string TokenCreated = "Token oluşturuldu.";
+
+        public static string InsufficientBalance = "Yetersiz bakiye";
+
+        public static string PaymentCompleted = "Ödeme yapıldı";
     }
 }

@@ -1,63 +1,85 @@
 ﻿using Business.Abstract;
-using Business.Constant;
+using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
-using Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Business.Concrete
 {
     public class UserManager : IUserService
     {
-        private IUserDal _userDal;
+        private readonly IUserDal _userDal;
+
         public UserManager(IUserDal userDal)
         {
             _userDal = userDal;
         }
-        [ValidationAspect(typeof(UserValidator))]
-        public IResult Add(User user)
-        {
 
-            _userDal.Add(user);
-            return new SuccessResult(Messages.UserAdded);
+        [ValidationAspect(typeof(UserValidator))]
+        public IResult Add(User entity)
+        {
+            _userDal.Add(entity);
+            return new SuccessResult(Messages.AddUserMessage);
         }
 
-        public IResult Delete(User user)
+        public IResult Delete(User entity)
         {
-            _userDal.Delete(user);
-            return new SuccessResult(Messages.UserDeleted);
+            _userDal.Delete(entity);
+            return new SuccessResult(Messages.DeleteUserMessage);
+        }
+
+        public IDataResult<User> Get(int id)
+        {
+            User user = _userDal.Get(p => p.Id == id);
+            if (user == null)
+            {
+                return new ErrorDataResult<User>(Messages.GetErrorUserMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<User>(user, Messages.GetSuccessUserMessage);
+            }
         }
 
         public IDataResult<List<User>> GetAll()
         {
-            return new SuccessDataResult<List<User>>(_userDal.GetAll());
+            List<User> users = _userDal.GetAll();
+            if (users.Count == 0)
+            {
+                return new ErrorDataResult<List<User>>(Messages.GetErrorUserMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<List<User>>(users, Messages.GetSuccessUserMessage);
+            }
         }
 
-        public User GetByEmail(string email)
+        public IDataResult<User> GetByEmail(string email)
         {
-            return _userDal.Get(p => p.Email == email);
+            User user = _userDal.Get(p => p.Email.ToLower() == email.ToLower());
+            if (user == null)
+            {
+                return new ErrorDataResult<User>(Messages.GetErrorUserMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<User>(user, Messages.GetSuccessUserMessage);
+            }
         }
 
-        public IDataResult<User> GetById(int Id)
+        public IDataResult<List<OperationClaim>> GetClaims(User user)
         {
-
-            return new SuccessDataResult<User>(_userDal.Get(p => p.Id == Id));
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
         }
 
-        public List<OperationClaim> GetClaims(User user)
+        [ValidationAspect(typeof(UserValidator))]
+        public IResult Update(User entity)
         {
-            return _userDal.GetClaims(user);
-        }
-
-        public IResult Update(User user)
-        {
-            _userDal.Update(user);
-            return new SuccessResult(Messages.UserUpdated);
+            _userDal.Update(entity);
+            return new SuccessResult(Messages.EditUserMessage);
         }
     }
 }

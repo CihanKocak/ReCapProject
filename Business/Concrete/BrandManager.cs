@@ -1,52 +1,71 @@
 ﻿using Business.Abstract;
-using Business.Constant;
+using Business.BusinessAspects.Autofac;
+using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Business.Concrete
 {
     public class BrandManager : IBrandService
     {
-        IBrandDal _brandDal;
+        private readonly IBrandDal _brandDal;
+
         public BrandManager(IBrandDal brandDal)
         {
             _brandDal = brandDal;
         }
 
-        public IResult Add(Brand brand)
+        [SecuredOperation("brand")]
+        [ValidationAspect(typeof(BrandValidator))]
+        public IResult Add(Brand entity)
         {
-            _brandDal.Add(brand);
-            return new SuccessResult(Messages.BrandAdded);
-
+            _brandDal.Add(entity);
+            return new SuccessResult(Messages.AddBrandMessage);
         }
 
-        public IResult Delete(Brand brand)
+        public IResult Delete(Brand entity)
         {
-            _brandDal.Delete(brand);
-            return new SuccessResult(Messages.BrandDeleted);
+            _brandDal.Delete(entity);
+            return new SuccessResult(Messages.DeleteBrandMessage);
         }
 
+        public IDataResult<Brand> Get(int id)
+        {
+            Brand brand = _brandDal.Get(p => p.BrandId == id);
+
+            if (brand == null)
+            {
+                return new ErrorDataResult<Brand>(Messages.GetErrorBrandMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<Brand>(brand, Messages.GetSuccessBrandMessage);
+            }
+        }
+
+        //[SecuredOperation("brand")]
         public IDataResult<List<Brand>> GetAll()
         {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll().ToList());
-
+            List<Brand> brands = _brandDal.GetAll();
+            if (brands == null)
+            {
+                return new ErrorDataResult<List<Brand>>(Messages.GetErrorBrandMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<List<Brand>>(brands, Messages.GetSuccessBrandMessage);
+            }
         }
 
-        public IDataResult<Brand> GetById(int Id)
+        [ValidationAspect(typeof(BrandValidator))]
+        public IResult Update(Brand entity)
         {
-            return new SuccessDataResult<Brand>(_brandDal.Get(p => p.BrandId == Id));
-
-        }
-
-        public IResult Update(Brand brand)
-        {
-            _brandDal.Update(brand);
-            return new SuccessResult(Messages.BrandUpdated);
+            _brandDal.Update(entity);
+            return new SuccessResult(Messages.EditBrandMessage);
         }
     }
 }

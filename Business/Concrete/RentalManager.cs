@@ -1,152 +1,133 @@
 ﻿using Business.Abstract;
-using Business.BusinessAspects.Autofac;
-using Business.Constant;
+using Business.Constants;
 using Business.ValidationRules.FluentValidation;
-using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
-using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.Concrete.DTOs;
-using FluentValidation;
-using System;
+using Entities.Dtos;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace Business.Concrete
 {
     public class RentalManager : IRentalService
     {
-        private IRentalDal _rental;
+        private readonly IRentalDal _rentalDal;
 
-
-        //true müsaitlik anlamında;
-        public RentalManager(IRentalDal rental)
+        public RentalManager(IRentalDal rentalDal)
         {
-            _rental = rental;
+            _rentalDal = rentalDal;
         }
 
-        [CacheRemoveAspect("IRentalService.Get")]
-        [SecuredOperation("Kullanici")]
         [ValidationAspect(typeof(RentalValidator))]
-        public IResult Add(Rental Tentity)
+        public IResult Add(Rental entity)
         {
-            IResult results = BusinessRules.Run(CheckIfCarInUse(Tentity.CarId));
-            if (results != null)
-            {
-                return results;
-            }
+            var result = BusinessRules.Run(WillLeasedCarAvailable(entity.CarId));
 
-            _rental.Add(Tentity);
-            return new SuccessResult(Messages.RentalAdded);
-        }
-
-        //rental tablosundan silindi.
-        public IResult Delete(Rental rental)
-        {
-            IResult results = BusinessRules.Run(CheckIfDelete(rental.Id));
-            if (results != null)
-            {
-                return results;
-            }
-            _rental.Delete(rental);
-            return new SuccessResult(Messages.RentalDeleted);
-
-        }
-
-        //bu metot çagrıldıgında arac teslim edildi.
-        //teslim edilme tarihi verildi.
-        [CacheRemoveAspect("IRentalService.Get")]
-        public IResult Deliver(int rentalId)
-        {
-            IResult results = BusinessRules.Run(CheckIfDeliver(rentalId));
-            if (results != null)
-            {
-                return results;
-            }
-
-            return new SuccessResult(Messages.RentalDelivered);
-
-        }
-
-        [CacheAspect]
-        public IDataResult<List<Rental>> GetAll()
-        {
-            return new SuccessDataResult<List<Rental>>(_rental.GetAll());
-        }
-
-        [CacheAspect]
-        public IDataResult<Rental> GetById(int Id)
-        {
-            return new SuccessDataResult<Rental>(_rental.Get(p => p.Id == Id));
-        }
-
-        [CacheAspect]
-        public IDataResult<List<Rental>> InUse()
-        {
-            return new SuccessDataResult<List<Rental>>(_rental.GetAll(p => p.ReturnDate == null));
-        }
-
-        [CacheAspect]
-        public IDataResult<List<Rental>> NotInUse()
-        {
-            return new SuccessDataResult<List<Rental>>(_rental.GetAll(p => p.ReturnDate != null));
-        }
-
-        [CacheRemoveAspect("IRentalService.Get")]
-        [ValidationAspect(typeof(RentalValidator))]
-        public IResult Update(Rental Tentity)
-        {
-            _rental.Update(Tentity);
-            return new SuccessResult(Messages.RentalUpdated);
-        }
-        [CacheAspect]
-        public IDataResult<List<DtoRentalDetail>> GetRentalDetails()
-        {
-            return new SuccessDataResult<List<DtoRentalDetail>>(_rental.GetRentalDetails());
-
-
-        }
-
-        private IResult CheckIfCarInUse(int carId)
-        {
-            //bu degerlere sahip bir sey döndürüyorsa arac kullanımdadır
-            var result = _rental.Get(p => p.CarId == carId && p.ReturnDate == null);
             if (result != null)
             {
-                return new ErrorResult(Messages.RentalBusy);
+                return result;
             }
-            return new SuccessResult();
-
+            _rentalDal.Add(entity);
+            return new SuccessResult(Messages.AddRentalMessage);
         }
 
-        private IResult CheckIfDelete(int Id)
+        public IResult Delete(Rental entity)
         {
-            var result = _rental.Get(p => p.Id == Id);
-            if (result == null)
-            {
-                return new ErrorResult(Messages.NoRecording);
-            }
-            if (result.ReturnDate == null)
-            {
-                return new ErrorResult(Messages.RentalBusy);
-            }
-            return new SuccessResult();
+            _rentalDal.Delete(entity);
+            return new SuccessResult(Messages.DeleteRentalMessage);
         }
 
-        private IResult CheckIfDeliver(int rentalId)
+        public IDataResult<Rental> Get(int id)
         {
-            var result = _rental.Get(p => p.Id == rentalId);
-            if (result.ReturnDate != null)
+            Rental rental = _rentalDal.Get(p => p.Id == id);
+            if (rental == null)
             {
-                return new ErrorResult(Messages.NoRecording);
+                return new ErrorDataResult<Rental>(Messages.GetErrorRentalMessage);
             }
-            result.ReturnDate = DateTime.Now.Date;
-            Update(result);
-            return new SuccessResult();
+            else
+            {
+                return new SuccessDataResult<Rental>(rental, Messages.GetSuccessRentalMessage);
+            }
         }
+
+        public IDataResult<List<Rental>> GetAll()
+        {
+            List<Rental> rentals = _rentalDal.GetAll();
+            if (rentals.Count == 0)
+            {
+                return new ErrorDataResult<List<Rental>>(Messages.GetErrorRentalMessage);
+            }
+            else
+            {
+                return new SuccessDataResult<List<Rental>>(rentals, Messages.GetSuccessRentalMessage);
+            }
+        }
+
+        public IDataResult<List<RentalDetailDto>> GetAllRentalDetails()
+        {
+            List<RentalDetailDto> rentalDetailDtos = _rentalDal.GetAllRentalDetails();
+            if (rentalDetailDtos.Count > 0)
+                return new SuccessDataResult<List<RentalDetailDto>>(rentalDetailDtos, Messages.GetSuccessRentalMessage);
+            else
+                return new ErrorDataResult<List<RentalDetailDto>>(Messages.GetErrorRentalMessage);
+        }
+
+        public IDataResult<List<RentalDetailDto>> GetAllUndeliveredRentalDetails()
+        {
+            List<RentalDetailDto> rentalDetailDtos = _rentalDal.GetAllRentalDetails(p => p.ReturnDate == null);
+            if (rentalDetailDtos.Count > 0)
+                return new SuccessDataResult<List<RentalDetailDto>>(rentalDetailDtos, Messages.GetSuccessRentalMessage);
+            else
+                return new ErrorDataResult<List<RentalDetailDto>>(Messages.GetErrorRentalMessage);
+        }
+
+        public IDataResult<List<RentalDetailDto>> GetAllDeliveredRentalDetails()
+        {
+            List<RentalDetailDto> rentalDetailDtos = _rentalDal.GetAllRentalDetails(p => p.ReturnDate != null);
+            if (rentalDetailDtos.Count > 0)
+                return new SuccessDataResult<List<RentalDetailDto>>(rentalDetailDtos, Messages.GetSuccessRentalMessage);
+            else
+                return new ErrorDataResult<List<RentalDetailDto>>(Messages.GetErrorRentalMessage);
+        }
+
+        [ValidationAspect(typeof(RentalValidator))]
+        public IResult Update(Rental entity)
+        {
+            _rentalDal.Update(entity);
+            return new SuccessResult(Messages.EditRentalMessage);
+        }
+
+        public IResult DeliverTheCar(Rental entity)
+        {
+            var result = BusinessRules.Run(CanARentalCarBeReturned(entity.Id));
+            if (result != null)
+            {
+                return result;
+            }
+            _rentalDal.Update(entity);
+            return new SuccessResult(Messages.CarDeliverTheCar);
+        }
+
+        #region RentalManager Business Rules
+
+        private IResult WillLeasedCarAvailable(int carId)
+        {
+            if (_rentalDal.Get(p => p.CarId == carId && p.ReturnDate == null) != null)
+                return new ErrorResult(Messages.CarNotAvaible);
+            else
+                return new SuccessResult();
+        }
+
+        private IResult CanARentalCarBeReturned(int carId)
+        {
+            if (_rentalDal.Get(p => p.CarId == carId && p.ReturnDate == null) == null)
+                return new ErrorResult(Messages.CarNotAvaible);
+            else
+                return new SuccessResult();
+        }
+
+        #endregion RentalManager Business Rules
     }
 }
