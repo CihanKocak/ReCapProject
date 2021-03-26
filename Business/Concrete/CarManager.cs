@@ -157,9 +157,9 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(CarValidator))]
-        public IResult Update(Car entity)
+        public IResult Update(Car car)
         {
-            _carDal.Update(entity);
+            _carDal.Update(car);
             return new SuccessResult(Messages.EditCarMessage);
         }
     }

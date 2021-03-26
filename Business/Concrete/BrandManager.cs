@@ -19,7 +19,7 @@ namespace Business.Concrete
             _brandDal = brandDal;
         }
 
-        [SecuredOperation("brand")]
+        //[SecuredOperation("brand")]
         [ValidationAspect(typeof(BrandValidator))]
         public IResult Add(Brand entity)
         {
@@ -62,9 +62,9 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(BrandValidator))]
-        public IResult Update(Brand entity)
+        public IResult Update(Brand brand)
         {
-            _brandDal.Update(entity);
+            _brandDal.Update(brand);
             return new SuccessResult(Messages.EditBrandMessage);
         }
     }
